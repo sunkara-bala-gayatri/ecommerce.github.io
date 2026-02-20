@@ -3,7 +3,7 @@
 Fashion Hall is a modern, responsive e-commerce platform designed with visual excellence and smooth user interactions in mind. Built with React and Vite, it offers a premium shopping experience with dynamic animations and a sleek interface.
 
 ## 🚀 Live Demo
-Check out the live application here: [ecommerce-github-der902x9e-sunkara-bala-gayatris-projects.vercel.app](ecommerce-github-der902x9e-sunkara-bala-gayatris-projects.vercel.app)
+Check out the live application here: [http://localhost:5173/](http://localhost:5173/)
 
 ## ✨ Key Features
 - **Dynamic Animations**: Smooth transitions and interactive elements powered by Framer Motion.
