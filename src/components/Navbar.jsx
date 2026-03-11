@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, ShoppingBag, Heart, User, Menu, X, LogOut } from 'lucide-react';
+import { Search, ShoppingBag, Heart, User, Menu, X, LogOut, Package } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useShop } from '../context/ShopContext';
 
@@ -60,6 +60,13 @@ const Navbar = () => {
               )}
             </div>
 
+            <Link to="/track-orders" className="flex flex-col items-center gap-1 text-text-main hover:text-accent transition-colors">
+              <div className="relative">
+                <Package size={24} />
+              </div>
+              <span className="hidden lg:block text-[11px] font-bold uppercase">Track Order</span>
+            </Link>
+
             <Link to="/wishlist" className="flex flex-col items-center gap-1 text-text-main hover:text-accent transition-colors">
               <div className="relative">
                 <Heart size={24} />
@@ -109,6 +116,7 @@ const Navbar = () => {
               ) : (
                 <>
                   <Link to="/profile" className="text-lg font-semibold" onClick={() => setIsOpen(false)}>My Profile</Link>
+                  <Link to="/track-orders" className="text-lg font-semibold" onClick={() => setIsOpen(false)}>Track Orders</Link>
                   <button onClick={() => { logout(); setIsOpen(false); }} className="text-lg font-semibold text-left text-accent">Logout</button>
                 </>
               )}

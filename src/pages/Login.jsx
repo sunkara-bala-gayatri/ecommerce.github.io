@@ -1,20 +1,44 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Mail, Lock, ArrowRight, Github, Chrome } from 'lucide-react';
 import { useShop } from '../context/ShopContext';
+import { login as loginService, setToken } from '../services/auth';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
   const { login } = useShop();
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const handleSubmit = (e) => {
+  const successMessage = location.state?.message;
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Dummy login
-    login({ name: 'Gayatri User', email });
-    navigate('/');
+    setError(null);
+    setLoading(true);
+
+    try {
+      const data = await loginService({ email, password });
+
+      if (data.status === 'success') {
+        // Save token to localStorage
+        setToken(data.token);
+
+        // Save user to context
+        login(data.user);
+
+        // Redirect to home/dashboard
+        navigate('/');
+      }
+    } catch (err) {
+      setError(err.message || 'Invalid credentials');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -28,6 +52,18 @@ const Login = () => {
           <h1 className="text-3xl font-bold mb-3 font-serif uppercase tracking-tight">Welcome Back</h1>
           <p className="text-text-muted text-sm">Sign in to access your curated collections and orders.</p>
         </div>
+
+        {successMessage && (
+          <div className="bg-green-50 text-green-700 p-4 rounded-xl mb-6 text-sm font-medium border border-green-100 flex items-center gap-2">
+            <span>{successMessage}</span>
+          </div>
+        )}
+
+        {error && (
+          <div className="bg-red-50 text-red-600 p-4 rounded-xl mb-6 text-sm font-medium border border-red-100 flex items-center gap-2">
+            <span>{error}</span>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
@@ -68,8 +104,12 @@ const Login = () => {
             <a href="#" className="text-xs text-accent font-bold hover:underline">Forgot password?</a>
           </div>
 
-          <button type="submit" className="w-full bg-primary text-white py-4 font-bold rounded-xl shadow-lg hover:bg-accent transition-all transform hover:-translate-y-1 flex items-center justify-center gap-3 uppercase tracking-widest text-sm">
-            LOGIN <ArrowRight size={18} />
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-primary text-white py-4 font-bold rounded-xl shadow-lg hover:bg-accent transition-all transform hover:-translate-y-1 flex items-center justify-center gap-3 uppercase tracking-widest text-sm disabled:opacity-50 disabled:hover:translate-y-0"
+          >
+            {loading ? 'LOGGING IN...' : 'LOGIN'} <ArrowRight size={18} />
           </button>
         </form>
 

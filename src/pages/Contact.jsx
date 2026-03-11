@@ -205,7 +205,8 @@ const Contact = () => {
                 }
                 .submit-btn {
                     background: var(--primary);
-                    color: white;
+                     box-shadow: 0 15px 50px rgba(0,0,0,0.05);
+                    color: black;
                     padding: 18px;
                     border-radius: 8px;
                     font-weight: 700;

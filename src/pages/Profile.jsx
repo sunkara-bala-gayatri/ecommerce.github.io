@@ -2,17 +2,15 @@ import React, { useState } from 'react';
 import { useShop } from '../context/ShopContext';
 import { User, Mail, MapPin, Package, Heart, LogOut, Camera, Edit2 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { Link, useNavigate } from 'react-router-dom';
+import { MOCK_ORDERS } from './TrackOrders';
 
 const Profile = () => {
     const { user, logout } = useShop();
     const [isEditing, setIsEditing] = useState(false);
+    const navigate = useNavigate();
 
     if (!user) return null;
-
-    const orders = [
-        { id: '#ORD-7721', date: '2026-02-15', status: 'Delivered', total: '$129.99', items: 3 },
-        { id: '#ORD-6612', date: '2026-01-20', status: 'Shipped', total: '$85.50', items: 1 },
-    ];
 
     return (
         <div className="bg-gray-50 min-h-screen py-10">
@@ -35,7 +33,7 @@ const Profile = () => {
                             <p className="text-text-muted text-sm">{user.email}</p>
 
                             <button
-                                onClick={logout}
+                                onClick={() => { logout(); navigate("/login"); }}
                                 className="mt-6 flex items-center gap-2 text-red-500 font-bold text-sm hover:bg-red-50 px-4 py-2 rounded-lg transition-colors w-full justify-center"
                             >
                                 <LogOut size={18} /> LOGOUT
@@ -46,19 +44,19 @@ const Profile = () => {
                             <button className="w-full flex items-center gap-3 p-4 text-sm font-bold border-l-4 border-accent bg-accent/5 text-accent">
                                 <User size={18} /> Account Overview
                             </button>
-                            <button className="w-full flex items-center gap-3 p-4 text-sm font-bold border-l-4 border-transparent hover:bg-gray-50 text-text-muted hover:text-primary transition-colors">
+                            <Link to="/track-orders" className="w-full flex items-center gap-3 p-4 text-sm font-bold border-l-4 border-transparent hover:bg-gray-50 text-text-muted hover:text-primary transition-colors">
                                 <Package size={18} /> Order History
-                            </button>
-                            <button className="w-full flex items-center gap-3 p-4 text-sm font-bold border-l-4 border-transparent hover:bg-gray-50 text-text-muted hover:text-primary transition-colors">
+                            </Link>
+                            <Link to="/wishlist" className="w-full flex items-center gap-3 p-4 text-sm font-bold border-l-4 border-transparent hover:bg-gray-50 text-text-muted hover:text-primary transition-colors">
                                 <Heart size={18} /> My Wishlist
-                            </button>
+                            </Link>
                         </nav>
                     </div>
 
                     {/* Main Content */}
                     <div className="space-y-8">
                         {/* Account Details */}
-                        <section className="bg-white p-8 rounded-xl shadow-sm border border-gray-100">
+                        <section className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 mb-8">
                             <div className="flex justify-between items-center mb-8 pb-4 border-b border-gray-50">
                                 <h3 className="text-lg font-bold uppercase tracking-wider">Account Details</h3>
                                 <button
@@ -93,9 +91,12 @@ const Profile = () => {
 
                         {/* Recent Orders */}
                         <section className="bg-white p-8 rounded-xl shadow-sm border border-gray-100">
-                            <h3 className="text-lg font-bold uppercase tracking-wider mb-8 pb-4 border-b border-gray-50">Recent Orders</h3>
+                            <div className="flex justify-between items-center mb-8 pb-4 border-b border-gray-50">
+                                <h3 className="text-lg font-bold uppercase tracking-wider">Recent Orders</h3>
+                                <Link to="/track-orders" className="text-sm font-bold text-accent hover:underline">View All</Link>
+                            </div>
                             <div className="overflow-x-auto">
-                                <table className="w-full text-left text-sm">
+                                <table className="w-full text-left text-sm whitespace-nowrap">
                                     <thead>
                                         <tr className="text-gray-400 uppercase text-[10px] tracking-widest">
                                             <th className="pb-4 font-bold">Order ID</th>
@@ -106,18 +107,18 @@ const Profile = () => {
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-gray-50">
-                                        {orders.map(order => (
+                                        {MOCK_ORDERS.map(order => (
                                             <tr key={order.id} className="hover:bg-gray-50 transition-colors">
                                                 <td className="py-4 font-bold">{order.id}</td>
                                                 <td className="py-4 text-text-muted">{order.date}</td>
                                                 <td className="py-4">
-                                                    <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${order.status === 'Delivered' ? 'bg-green-100 text-green-600' : 'bg-blue-100 text-blue-600'}`}>
-                                                        {order.status}
+                                                    <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${order.status === 'delivered' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}>
+                                                        {order.status === 'in-transit' ? 'In Transit' : 'Delivered'}
                                                     </span>
                                                 </td>
-                                                <td className="py-4 font-bold">{order.total}</td>
+                                                <td className="py-4 font-bold">${order.total.toFixed(2)}</td>
                                                 <td className="py-4 text-right">
-                                                    <button className="text-accent text-xs font-bold hover:underline">View Details</button>
+                                                    <Link to="/track-orders" className="text-accent text-xs font-bold hover:underline">Track Order</Link>
                                                 </td>
                                             </tr>
                                         ))}

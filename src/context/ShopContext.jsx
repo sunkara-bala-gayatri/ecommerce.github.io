@@ -73,7 +73,10 @@ export const ShopProvider = ({ children }) => {
     };
 
     const login = (userData) => setUser(userData);
-    const logout = () => setUser(null);
+    const logout = () => {
+        setUser(null);
+        localStorage.removeItem('token');
+    };
 
     const clearCart = () => {
         setCart([]);

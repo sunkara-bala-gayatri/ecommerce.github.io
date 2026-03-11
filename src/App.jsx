@@ -13,6 +13,7 @@ import Terms from './pages/Terms';
 import FAQ from './pages/FAQ';
 import Profile from './pages/Profile';
 import ProductDetails from './pages/ProductDetails';
+import TrackOrders from './pages/TrackOrders';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 
@@ -45,6 +46,7 @@ function App() {
                       <Route path="/cart" element={<Cart />} />
                       <Route path="/wishlist" element={<Wishlist />} />
                       <Route path="/checkout" element={<Checkout />} />
+                      <Route path="/track-orders" element={<TrackOrders />} />
                       <Route path="/contact" element={<Contact />} />
                       <Route path="/terms" element={<Terms />} />
                       <Route path="/faq" element={<FAQ />} />
