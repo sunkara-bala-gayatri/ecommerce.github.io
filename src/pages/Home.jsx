@@ -40,17 +40,18 @@ const Home = () => {
               key={index}
               className="relative rounded-2xl overflow-hidden group shadow-lg hover:shadow-2xl transition-all duration-500"
               whileHover={{ y: -10 }}
+              whileTap={{ scale: 0.98 }}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
             >
               <div className="h-[450px] overflow-hidden">
-                <img src={cat.img} alt={cat.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                <img src={cat.img} alt={cat.title} loading="lazy" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
               </div>
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent p-8 flex flex-col justify-end items-center text-center">
                 <h3 className="text-xl mb-4 font-serif font-bold text-white tracking-wide">{cat.title}</h3>
-                <Link to={cat.path} className="px-6 py-2.5 bg-white text-primary text-xs font-bold rounded-full hover:bg-accent hover:text-white transition-all transform hover:scale-105 uppercase tracking-widest shadow-xl">
+                <Link to={cat.path} className="px-6 py-2.5 bg-white text-primary text-xs font-bold rounded-full hover:bg-accent hover:text-white transition-all transform hover:scale-105 active:scale-95 uppercase tracking-widest shadow-xl">
                   SHOP NOW
                 </Link>
               </div>

@@ -20,7 +20,7 @@ const Hero = () => {
   }, []);
 
   return (
-    <div className="h-screen w-full relative flex items-center overflow-hidden mt-[-76px]">
+    <div className="h-screen w-full relative flex items-center overflow-hidden -mt-20 md:-mt-[76px]">
       <AnimatePresence mode='wait'>
         <motion.div
           key={currentBg}
@@ -40,11 +40,11 @@ const Hero = () => {
           transition={{ duration: 0.8, delay: 0.5 }}
           className="max-w-4xl"
         >
-          <span className="font-bold tracking-[4px] mb-5 block text-sm">NEW ARRIVALS 2026</span>
-          <h1 className="text-5xl md:text-8xl leading-[1.1] mb-8 font-serif">
-            DEFINE YOUR <br /> <span className="text-accent italic">SIGNATURE STYLE</span>
+          <span className="font-bold tracking-[3px] md:tracking-[4px] mb-4 md:mb-5 block text-xs md:text-sm uppercase">New Arrivals 2026</span>
+          <h1 className="text-4xl md:text-8xl leading-[1.1] mb-6 md:mb-8 font-serif uppercase">
+            Define Your <br /> <span className="text-accent italic">Signature Style</span>
           </h1>
-          <p className="text-lg md:text-xl max-w-lg mb-10 opacity-90 leading-relaxed">
+          <p className="text-base md:text-xl max-w-lg mb-8 md:mb-10 opacity-90 leading-relaxed font-medium">
             Explore our curated collections of premium fashion.
             From minimalist essentials to statement pieces.
           </p>
@@ -59,11 +59,11 @@ const Hero = () => {
         </motion.div>
       </div>
 
-      <div className="absolute bottom-10 right-10 flex gap-4">
+      <div className="absolute bottom-10 right-4 md:right-10 flex gap-4">
         {backgrounds.map((_, index) => (
           <div
             key={index}
-            className={`h-1 cursor-pointer transition-all duration-300 ${index === currentBg ? 'bg-accent w-15' : 'bg-white/30 w-10'}`}
+            className={`h-1 cursor-pointer transition-all duration-300 ${index === currentBg ? 'bg-accent w-12 md:w-15' : 'bg-white/30 w-8 md:w-10'}`}
             onClick={() => setCurrentBg(index)}
           />
         ))}

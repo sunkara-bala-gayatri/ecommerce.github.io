@@ -24,17 +24,16 @@
   * {
     @apply m-0 p-0 box-border;
     scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
   }
 
   body {
-    @apply font-sans antialiased text-text-main bg-white overflow-x-hidden;
+    @apply font-sans antialiased text-text-main bg-white overflow-x-hidden min-h-screen;
+    touch-action: manipulation;
   }
 
-  h1,
-  h2,
-  h3,
-  h4 {
-    @apply font-serif;
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif text-primary;
   }
 
   a {
@@ -47,6 +46,29 @@
 
   button {
     @apply cursor-pointer border-none bg-none font-[inherit] outline-none;
+  }
+
+  /* Responsive Touch Targets and Spacing */
+  @media (max-width: 768px) {
+    button, 
+    a, 
+    input, 
+    select, 
+    textarea {
+      min-height: 44px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="tel"],
+    textarea {
+      @apply text-base; /* Prevent zoom on iOS */
+    }
+
+    h1 { @apply text-3xl; }
+    h2 { @apply text-2xl; }
+    h3 { @apply text-xl; }
   }
 }
 
@@ -62,9 +84,13 @@
   .loader {
     @apply w-12 h-12 border-4 border-gray-100 border-t-accent rounded-full animate-spin;
   }
+
+  .btn-touch {
+    @apply flex items-center justify-center min-h-[44px] px-6 py-2 transition-all active:scale-[0.98] rounded-xl font-bold uppercase tracking-widest text-xs;
+  }
 }
 
-/* Custom Scrollbar - keeping as standard CSS but mapping thumb to accent */
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
 }
@@ -75,6 +101,5 @@
 
 ::-webkit-scrollbar-thumb {
   background: #ff3f6c;
-  /* --color-accent value */
   border-radius: 10px;
 }

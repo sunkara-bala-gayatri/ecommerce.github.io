@@ -19,19 +19,24 @@ const ProductCard = ({ product }) => {
     >
       <div className="relative h-80 bg-[#fdfdfd] flex items-center justify-center p-5 overflow-hidden">
         <Link to={`/product/${product.id}`} className="w-full h-full flex items-center justify-center">
-          <img src={product.image} alt={product.title} className="max-w-full max-h-full object-contain mix-blend-multiply transition-transform duration-500 group-hover:scale-105" />
+          <img 
+            src={product.image} 
+            alt={product.title} 
+            loading="lazy"
+            className="max-w-full max-h-full object-contain mix-blend-multiply transition-transform duration-500 group-hover:scale-105" 
+          />
         </Link>
 
         <button
-          className={`absolute top-4 right-4 w-9 h-9 border-none bg-white rounded-full flex items-center justify-center shadow-md transition-colors ${isWishlisted ? 'text-accent' : 'text-text-muted hover:text-accent'}`}
+          className={`absolute top-4 right-4 w-10 h-10 border-none bg-white rounded-full flex items-center justify-center shadow-md transition-all active:scale-90 ${isWishlisted ? 'text-accent' : 'text-text-muted hover:text-accent'}`}
           onClick={() => toggleWishlist(product)}
         >
-          <Heart size={20} fill={isWishlisted ? "currentColor" : "none"} />
+          <Heart size={22} fill={isWishlisted ? "currentColor" : "none"} />
         </button>
 
-        <div className="absolute -bottom-12 group-hover:bottom-0 left-0 w-full p-2.5 bg-white/90 transition-all duration-300 flex justify-center">
+        <div className="absolute -bottom-14 group-hover:bottom-0 left-0 w-full p-2.5 bg-white/95 transition-all duration-300 flex justify-center border-t border-gray-100 sm:border-0 sm:bg-white/90">
           <button
-            className="w-full bg-primary text-white py-2.5 font-bold text-[12px] flex items-center justify-center gap-2 rounded hover:bg-accent transition-colors"
+            className="w-full bg-primary text-white py-3.5 font-bold text-[12px] flex items-center justify-center gap-2 rounded-xl hover:bg-accent transition-all active:scale-95 shadow-lg"
             onClick={() => addToCart(product)}
           >
             <ShoppingBag size={18} /> ADD TO BAG
