@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { useShop } from '../context/ShopContext';
-import { User, Mail, MapPin, Package, Heart, LogOut, Camera, Edit2 } from 'lucide-react';
+import { User, Mail, MapPin, Package, Heart, LogOut, Camera, Edit2, ShoppingBag } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
-import { MOCK_ORDERS } from './TrackOrders';
 
 const Profile = () => {
-    const { user, logout } = useShop();
+    const { user, logout, orders } = useShop();
     const [isEditing, setIsEditing] = useState(false);
     const navigate = useNavigate();
 
@@ -96,34 +95,44 @@ const Profile = () => {
                                 <Link to="/track-orders" className="text-sm font-bold text-accent hover:underline">View All</Link>
                             </div>
                             <div className="overflow-x-auto">
-                                <table className="w-full text-left text-sm whitespace-nowrap">
-                                    <thead>
-                                        <tr className="text-gray-400 uppercase text-[10px] tracking-widest">
-                                            <th className="pb-4 font-bold">Order ID</th>
-                                            <th className="pb-4 font-bold">Date</th>
-                                            <th className="pb-4 font-bold">Status</th>
-                                            <th className="pb-4 font-bold">Total</th>
-                                            <th className="pb-4 font-bold"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-gray-50">
-                                        {MOCK_ORDERS.map(order => (
-                                            <tr key={order.id} className="hover:bg-gray-50 transition-colors">
-                                                <td className="py-4 font-bold">{order.id}</td>
-                                                <td className="py-4 text-text-muted">{order.date}</td>
-                                                <td className="py-4">
-                                                    <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${order.status === 'delivered' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}>
-                                                        {order.status === 'in-transit' ? 'In Transit' : 'Delivered'}
-                                                    </span>
-                                                </td>
-                                                <td className="py-4 font-bold">${order.total.toFixed(2)}</td>
-                                                <td className="py-4 text-right">
-                                                    <Link to="/track-orders" className="text-accent text-xs font-bold hover:underline">Track Order</Link>
-                                                </td>
+                                {orders.length > 0 ? (
+                                    <table className="w-full text-left text-sm whitespace-nowrap">
+                                        <thead>
+                                            <tr className="text-gray-400 uppercase text-[10px] tracking-widest">
+                                                <th className="pb-4 font-bold">Order ID</th>
+                                                <th className="pb-4 font-bold">Date</th>
+                                                <th className="pb-4 font-bold">Status</th>
+                                                <th className="pb-4 font-bold">Total</th>
+                                                <th className="pb-4 font-bold"></th>
                                             </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody className="divide-y divide-gray-50">
+                                            {orders.slice(0, 5).map(order => (
+                                                <tr key={order.id} className="hover:bg-gray-50 transition-colors">
+                                                    <td className="py-4 font-bold">{order.id}</td>
+                                                    <td className="py-4 text-text-muted">{order.date}</td>
+                                                    <td className="py-4">
+                                                        <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${order.status === 'delivered' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}>
+                                                            {order.status === 'in-transit' ? 'In Transit' : order.status}
+                                                        </span>
+                                                    </td>
+                                                    <td className="py-4 font-bold">${order.total.toFixed(2)}</td>
+                                                    <td className="py-4 text-right">
+                                                        <Link to="/track-orders" className="text-accent text-xs font-bold hover:underline">Track Order</Link>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                ) : (
+                                    <div className="py-10 text-center">
+                                        <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center text-gray-300 mx-auto mb-4">
+                                            <ShoppingBag size={32} />
+                                        </div>
+                                        <p className="text-text-muted text-sm mb-4">You haven't placed any orders yet.</p>
+                                        <Link to="/shop" className="text-accent text-xs font-bold uppercase tracking-widest hover:underline">Start Shopping</Link>
+                                    </div>
+                                )}
                             </div>
                         </section>
                     </div>

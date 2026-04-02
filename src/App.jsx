@@ -16,6 +16,7 @@ import ProductDetails from './pages/ProductDetails';
 import TrackOrders from './pages/TrackOrders';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import ScrollToTop from './components/ScrollToTop';
 
 const ProtectedRoute = ({ children }) => {
   const { user } = useShop();
@@ -29,6 +30,7 @@ function App() {
   return (
     <ShopProvider>
       <Router>
+        <ScrollToTop />
         <div className="app-container">
           <Routes>
             <Route path="/login" element={<Login />} />

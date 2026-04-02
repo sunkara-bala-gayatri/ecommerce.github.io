@@ -6,20 +6,22 @@ const ShopContext = createContext();
 export const useShop = () => useContext(ShopContext);
 
 export const ShopProvider = ({ children }) => {
-    const [cart, setCart] = useState(() => {
-        const savedCart = localStorage.getItem('fashion_hall_cart');
-        return savedCart ? JSON.parse(savedCart) : [];
-    });
+    const safeParse = (key, defaultValue) => {
+        try {
+            const saved = localStorage.getItem(key);
+            if (!saved || saved === "undefined") return defaultValue;
+            return JSON.parse(saved);
+        } catch (error) {
+            console.error(`Error parsing localStorage key "${key}":`, error);
+            localStorage.removeItem(key); // Clear corrupted data
+            return defaultValue;
+        }
+    };
 
-    const [wishlist, setWishlist] = useState(() => {
-        const savedWishlist = localStorage.getItem('fashion_hall_wishlist');
-        return savedWishlist ? JSON.parse(savedWishlist) : [];
-    });
-
-    const [user, setUser] = useState(() => {
-        const savedUser = localStorage.getItem('fashion_hall_user');
-        return savedUser ? JSON.parse(savedUser) : null;
-    });
+    const [cart, setCart] = useState(() => safeParse('fashion_hall_cart', []));
+    const [wishlist, setWishlist] = useState(() => safeParse('fashion_hall_wishlist', []));
+    const [user, setUser] = useState(() => safeParse('fashion_hall_user', null));
+    const [orders, setOrders] = useState(() => safeParse('fashion_hall_orders', []));
 
     useEffect(() => {
         localStorage.setItem('fashion_hall_cart', JSON.stringify(cart));
@@ -36,6 +38,10 @@ export const ShopProvider = ({ children }) => {
             localStorage.removeItem('fashion_hall_user');
         }
     }, [user]);
+
+    useEffect(() => {
+        localStorage.setItem('fashion_hall_orders', JSON.stringify(orders));
+    }, [orders]);
 
     const addToCart = (product) => {
         setCart((prev) => {
@@ -83,6 +89,10 @@ export const ShopProvider = ({ children }) => {
         localStorage.removeItem('fashion_hall_cart');
     };
 
+    const addOrder = (order) => {
+        setOrders(prev => [order, ...prev]);
+    };
+
     const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);
     const [isDataLoading, setIsDataLoading] = useState(true);
@@ -119,6 +129,8 @@ export const ShopProvider = ({ children }) => {
         login,
         logout,
         clearCart,
+        orders,
+        addOrder,
     };
 
     return <ShopContext.Provider value={value}>{children}</ShopContext.Provider>;

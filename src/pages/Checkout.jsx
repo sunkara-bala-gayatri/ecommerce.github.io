@@ -5,9 +5,52 @@ import { CreditCard, Truck, ShieldCheck, CheckCircle, ArrowLeft, ChevronRight, L
 import { Link, useNavigate } from 'react-router-dom';
 
 const Checkout = () => {
-    const { cart, user, clearCart } = useShop();
+    const { cart, user, clearCart, addOrder } = useShop();
     const [isOrdered, setIsOrdered] = useState(false);
+    const [addressQuery, setAddressQuery] = useState('');
+    const [addressSuggestions, setAddressSuggestions] = useState([]);
+    const [showSuggestions, setShowSuggestions] = useState(false);
+    const [formData, setFormData] = useState({
+        firstName: user?.name?.split(' ')[0] || '',
+        lastName: user?.name?.split(' ')[1] || '',
+        email: user?.email || '',
+        address: '',
+        city: '',
+        zip: ''
+    });
     const navigate = useNavigate();
+
+    const MOCK_ADDRESSES = [
+        { address: '123 Fifth Avenue, New York, NY', city: 'New York', zip: '10003' },
+        { address: '456 Fashion Blvd, Los Angeles, CA', city: 'Los Angeles', zip: '90001' },
+        { address: '789 Designer Row, London, UK', city: 'London', zip: 'WC2N 5DU' },
+        { address: '321 Style Street, Paris, France', city: 'Paris', zip: '75008' },
+        { address: '555 Vogue Lane, Milan, Italy', city: 'Milan', zip: '20121' },
+    ];
+
+    const handleAddressChange = (e) => {
+        const query = e.target.value;
+        setFormData({ ...formData, address: query });
+        if (query.length > 2) {
+            const filtered = MOCK_ADDRESSES.filter(addr =>
+                addr.address.toLowerCase().includes(query.toLowerCase())
+            );
+            setAddressSuggestions(filtered);
+            setShowSuggestions(true);
+        } else {
+            setShowSuggestions(false);
+        }
+    };
+
+    const handleSelectAddress = (addr) => {
+        setFormData({
+            ...formData,
+            address: addr.address,
+            city: addr.city,
+            zip: addr.zip
+        });
+        setShowSuggestions(false);
+    };
 
     const subtotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
     const shipping = subtotal > 500 ? 0 : 50;
@@ -15,6 +58,30 @@ const Checkout = () => {
 
     const handlePlaceOrder = (e) => {
         e.preventDefault();
+
+        const orderId = `FH-2024-${Math.floor(1000 + Math.random() * 9000)}`;
+        const orderDate = new Date().toLocaleDateString('en-US', {
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric'
+        });
+
+        const newOrder = {
+            id: orderId,
+            date: orderDate,
+            total: total,
+            items: cart.length,
+            status: 'processing',
+            timeline: [
+                { status: 'Order Placed', date: `${orderDate}, ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`, completed: true },
+                { status: 'Processing', date: 'Pending', completed: false },
+                { status: 'Shipped', date: 'Pending', completed: false },
+                { status: 'Out for Delivery', date: 'Pending', completed: false },
+                { status: 'Delivered', date: 'Pending', completed: false }
+            ]
+        };
+
+        addOrder(newOrder);
         clearCart();
         setIsOrdered(true);
     };
@@ -66,27 +133,49 @@ const Checkout = () => {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-2">
                                 <label className="text-[11px] font-bold text-text-muted uppercase ml-1">First Name</label>
-                                <input type="text" placeholder="Jane" className="w-full bg-gray-50 border border-transparent px-4 py-3 rounded-xl focus:bg-white focus:border-accent outline-none transition-all text-sm font-medium" required defaultValue={user?.name?.split(' ')[0]} />
+                                <input type="text" placeholder="Jane" className="w-full bg-gray-50 border border-transparent px-4 py-3 rounded-xl focus:bg-white focus:border-accent outline-none transition-all text-sm font-medium" required value={formData.firstName} onChange={(e) => setFormData({...formData, firstName: e.target.value})} />
                             </div>
                             <div className="space-y-2">
                                 <label className="text-[11px] font-bold text-text-muted uppercase ml-1">Last Name</label>
-                                <input type="text" placeholder="Doe" className="w-full bg-gray-50 border border-transparent px-4 py-3 rounded-xl focus:bg-white focus:border-accent outline-none transition-all text-sm font-medium" required defaultValue={user?.name?.split(' ')[1]} />
+                                <input type="text" placeholder="Doe" className="w-full bg-gray-50 border border-transparent px-4 py-3 rounded-xl focus:bg-white focus:border-accent outline-none transition-all text-sm font-medium" required value={formData.lastName} onChange={(e) => setFormData({...formData, lastName: e.target.value})} />
                             </div>
                             <div className="md:col-span-2 space-y-2">
                                 <label className="text-[11px] font-bold text-text-muted uppercase ml-1">Email Address</label>
-                                <input type="email" placeholder="jane@example.com" className="w-full bg-gray-50 border border-transparent px-4 py-3 rounded-xl focus:bg-white focus:border-accent outline-none transition-all text-sm font-medium" required defaultValue={user?.email} />
+                                <input type="email" placeholder="jane@example.com" className="w-full bg-gray-50 border border-transparent px-4 py-3 rounded-xl focus:bg-white focus:border-accent outline-none transition-all text-sm font-medium" required value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} />
                             </div>
-                            <div className="md:col-span-2 space-y-2">
+                            <div className="md:col-span-2 space-y-2 relative">
                                 <label className="text-[11px] font-bold text-text-muted uppercase ml-1">Shipping Address</label>
-                                <input type="text" placeholder="123 Fashion St, Avenue 01" className="w-full bg-gray-50 border border-transparent px-4 py-3 rounded-xl focus:bg-white focus:border-accent outline-none transition-all text-sm font-medium" required />
+                                <input 
+                                    type="text" 
+                                    placeholder="123 Fashion St, Avenue 01" 
+                                    className="w-full bg-gray-50 border border-transparent px-4 py-3 rounded-xl focus:bg-white focus:border-accent outline-none transition-all text-sm font-medium" 
+                                    required 
+                                    value={formData.address}
+                                    onChange={handleAddressChange}
+                                    onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+                                />
+                                {showSuggestions && addressSuggestions.length > 0 && (
+                                    <div className="absolute left-0 right-0 top-full mt-1 bg-white border border-gray-100 rounded-xl shadow-2xl z-20 overflow-hidden">
+                                        {addressSuggestions.map((addr, i) => (
+                                            <button
+                                                key={i}
+                                                type="button"
+                                                onClick={() => handleSelectAddress(addr)}
+                                                className="w-full px-4 py-3 text-left text-sm hover:bg-gray-50 transition-colors border-b border-gray-50 last:border-0"
+                                            >
+                                                {addr.address}
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
                             <div className="space-y-2">
                                 <label className="text-[11px] font-bold text-text-muted uppercase ml-1">City</label>
-                                <input type="text" placeholder="New York" className="w-full bg-gray-50 border border-transparent px-4 py-3 rounded-xl focus:bg-white focus:border-accent outline-none transition-all text-sm font-medium" required />
+                                <input type="text" placeholder="New York" className="w-full bg-gray-50 border border-transparent px-4 py-3 rounded-xl focus:bg-white focus:border-accent outline-none transition-all text-sm font-medium" required value={formData.city} onChange={(e) => setFormData({...formData, city: e.target.value})} />
                             </div>
                             <div className="space-y-2">
                                 <label className="text-[11px] font-bold text-text-muted uppercase ml-1">Postal Code</label>
-                                <input type="text" placeholder="10001" className="w-full bg-gray-50 border border-transparent px-4 py-3 rounded-xl focus:bg-white focus:border-accent outline-none transition-all text-sm font-medium" required />
+                                <input type="text" placeholder="10001" className="w-full bg-gray-50 border border-transparent px-4 py-3 rounded-xl focus:bg-white focus:border-accent outline-none transition-all text-sm font-medium" required value={formData.zip} onChange={(e) => setFormData({...formData, zip: e.target.value})} />
                             </div>
                         </div>
                     </div>

@@ -12,6 +12,7 @@ const mapDummyProduct = (p) => ({
   description: p.description,
   category: p.category,
   image: p.thumbnail,
+  brand: p.brand,
   rating: {
     rate: p.rating,
     count: p.stock
